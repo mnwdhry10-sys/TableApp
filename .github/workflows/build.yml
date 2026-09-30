@@ -44,10 +44,14 @@ jobs:
 
       - name: Build APK
         run: |
-          buildozer android debug
+          buildozer android debug 2>&1 | tee build.log
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: TableApp-APK
-          path: bin/*.apk
+      - name: Show important errors
+        if: failure()
+        run: |
+          echo "===== ERRORS ====="
+          grep -i -E "error|exception|failed|traceback" build.log | tail -50 || true
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact
