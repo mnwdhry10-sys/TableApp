@@ -58,6 +58,21 @@ jobs:
           echo "===== ALL APK FILES ====="
           find . -name "*.apk" -type f -print || true
 
+      - name: Show error summary
+        if: failure()
+        run: |
+          echo "========================================"
+          echo "           ERROR SUMMARY"
+          echo "========================================"
+
+          echo "===== ERROR LINES ====="
+          grep -i -E "error:|error |exception|traceback|failed|fatal|cannot|no such file|command failed" build.log | tail -100 || true
+
+          echo "========================================"
+          echo "        LAST 150 LINES OF LOG"
+          echo "========================================"
+          tail -150 build.log
+
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
