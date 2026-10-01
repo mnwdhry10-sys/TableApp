@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -27,15 +27,22 @@ jobs:
             zip \
             unzip \
             openjdk-17-jdk \
+            python3-pip \
+            python3-virtualenv \
             autoconf \
             automake \
             libtool \
+            libltdl-dev \
             pkg-config \
             zlib1g-dev \
             libncurses5-dev \
+            libncursesw5-dev \
+            libtinfo6 \
             cmake \
             libffi-dev \
-            libssl-dev
+            libssl-dev \
+            autopoint \
+            gettext
 
       - name: Install Buildozer
         run: |
@@ -65,12 +72,14 @@ jobs:
           echo "           ERROR SUMMARY"
           echo "========================================"
 
-          echo "===== ERROR LINES ====="
-          grep -i -E "error:|error |exception|traceback|failed|fatal|cannot|no such file|command failed" build.log | tail -100 || true
+          grep -i -E \
+            "error:|error |exception|traceback|failed|fatal|cannot|no such file|command failed" \
+            build.log | tail -100 || true
 
           echo "========================================"
           echo "        LAST 150 LINES OF LOG"
           echo "========================================"
+
           tail -150 build.log
 
       - name: Upload APK
